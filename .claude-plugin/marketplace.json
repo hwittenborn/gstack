@@ -1,0 +1,50 @@
+{
+  "name": "gstack-marketplace",
+  "description": "Garry's Stack — workflow skills for Claude Code. Plan review, code review, shipping, browser automation, and retrospectives.",
+  "plugins": [
+    {
+      "name": "gstack",
+      "description": "Complete gstack bundle with all workflow skills: /plan-ceo-review (founder mode), /plan-eng-review (eng manager), /review (paranoid engineer), /ship (release automation), /browse (headless browser QA), /retro (weekly retrospective).",
+      "version": "0.0.2",
+      "homepage": "https://github.com/garrytan/gstack",
+      "source": {
+        "type": "directory",
+        "path": "."
+      },
+      "skills": [
+        {
+          "name": "browse",
+          "source": "browse/SKILL.md",
+          "commands": ["browse"]
+        },
+        {
+          "name": "plan-ceo-review",
+          "source": "plan-ceo-review/SKILL.md",
+          "commands": ["plan-ceo-review"]
+        },
+        {
+          "name": "plan-eng-review",
+          "source": "plan-eng-review/SKILL.md",
+          "commands": ["plan-eng-review"]
+        },
+        {
+          "name": "review",
+          "source": "review/SKILL.md",
+          "commands": ["review"]
+        },
+        {
+          "name": "ship",
+          "source": "ship/SKILL.md",
+          "commands": ["ship"]
+        },
+        {
+          "name": "retro",
+          "source": "retro/SKILL.md",
+          "commands": ["retro"]
+        }
+      ],
+      "hooks": [],
+      "mcp": []
+    }
+  ]
+}
