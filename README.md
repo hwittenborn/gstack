@@ -76,29 +76,18 @@ This is not a prompt pack for beginners. It is an operating system for people wh
 
 ## Install
 
-**Requirements:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Git](https://git-scm.com/), [Bun](https://bun.sh/) v1.0+. `/browse` compiles a native binary — works on macOS and Linux (x64 and arm64).
+**Requirements:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code) v1.0.33+, [Bun](https://bun.sh/) v1.0+ (for `/browse` binary compilation).
 
-### Step 1: Install on your machine
+In Claude Code, run:
 
-Open Claude Code and paste this. Claude will do the rest.
+```
+/plugin marketplace add garrytan/gstack
+/plugin install gstack@gstack-marketplace
+```
 
-> Install gstack: run `git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup` then add a "gstack" section to CLAUDE.md that says to use the /browse skill from gstack for all web browsing, never use mcp\_\_claude-in-chrome\_\_\* tools, and lists the available skills: /plan-ceo-review, /plan-eng-review, /review, /ship, /browse, /retro. Then ask the user if they also want to add gstack to the current project so teammates get it.
+That's it. All six skills are available immediately. The `/browse` binary compiles automatically on first use (~10 seconds).
 
-### Step 2: Add to your repo so teammates get it (optional)
-
-> Add gstack to this project: run `cp -Rf ~/.claude/skills/gstack .claude/skills/gstack && rm -rf .claude/skills/gstack/.git && cd .claude/skills/gstack && ./setup` then add a "gstack" section to this project's CLAUDE.md that says to use the /browse skill from gstack for all web browsing, never use mcp\_\_claude-in-chrome\_\_\* tools, lists the available skills: /plan-ceo-review, /plan-eng-review, /review, /ship, /browse, /retro, and tells Claude that if gstack skills aren't working, run `cd .claude/skills/gstack && ./setup` to build the binary and register skills.
-
-Real files get committed to your repo (not a submodule), so `git clone` just works. The binary and node\_modules are gitignored — teammates just need to run `cd .claude/skills/gstack && ./setup` once to build (or `/browse` handles it automatically on first use).
-
-### What gets installed
-
-- Skill files (Markdown prompts) in `~/.claude/skills/gstack/` (or `.claude/skills/gstack/` for project installs)
-- Symlinks at `~/.claude/skills/browse`, `~/.claude/skills/review`, etc. pointing into the gstack directory
-- Browser binary at `browse/dist/browse` (~58MB, gitignored)
-- `node_modules/` (gitignored)
-- `/retro` saves JSON snapshots to `.context/retros/` in your project for trend tracking
-
-Everything lives inside `.claude/`. Nothing touches your PATH or runs in the background.
+To get automatic updates, enable auto-update for the gstack marketplace: run `/plugin`, go to **Marketplaces**, select **gstack-marketplace**, and choose **Enable auto-update**.
 
 ---
 
@@ -385,31 +374,33 @@ It saves a JSON snapshot to `.context/retros/` so the next run can show trends. 
 
 ## Troubleshooting
 
-**Skill not showing up in Claude Code?**
-Run `cd ~/.claude/skills/gstack && ./setup` (or `cd .claude/skills/gstack && ./setup` for project installs). This rebuilds symlinks so Claude can discover the skills.
+**Skills not showing up?**
+Run `/reload-plugins` in Claude Code. If that doesn't help, uninstall and reinstall:
+```
+/plugin uninstall gstack@gstack-marketplace
+/plugin install gstack@gstack-marketplace
+/reload-plugins
+```
 
 **`/browse` fails or binary not found?**
-Run `cd ~/.claude/skills/gstack && bun install && bun run build`. This compiles the browser binary. Requires Bun v1.0+.
-
-**Project copy is stale?**
-Re-copy from global: `for s in browse plan-ceo-review plan-eng-review review ship retro; do rm -f .claude/skills/$s; done && rm -rf .claude/skills/gstack && cp -Rf ~/.claude/skills/gstack .claude/skills/gstack && rm -rf .claude/skills/gstack/.git && cd .claude/skills/gstack && ./setup`
-
-**`bun` not installed?**
-Install it: `curl -fsSL https://bun.sh/install | bash`
+The binary compiles on first use. If it fails, make sure [Bun](https://bun.sh/) v1.0+ is installed: `curl -fsSL https://bun.sh/install | bash`
 
 ## Upgrading
 
-Paste this into Claude Code:
+```
+/plugin marketplace update gstack-marketplace
+/plugin update gstack@gstack-marketplace
+/reload-plugins
+```
 
-> Update gstack: run `cd ~/.claude/skills/gstack && git fetch origin && git reset --hard origin/main && ./setup`. If this project also has gstack at .claude/skills/gstack, update it too: run `for s in browse plan-ceo-review plan-eng-review review ship retro; do rm -f .claude/skills/$s; done && rm -rf .claude/skills/gstack && cp -Rf ~/.claude/skills/gstack .claude/skills/gstack && rm -rf .claude/skills/gstack/.git && cd .claude/skills/gstack && ./setup`
-
-The `setup` script rebuilds the browser binary and re-symlinks skills. It takes a few seconds.
+Or enable auto-updates in the `/plugin` Marketplaces tab — Claude Code will update gstack at startup.
 
 ## Uninstalling
 
-Paste this into Claude Code:
-
-> Uninstall gstack: remove the skill symlinks by running `for s in browse plan-ceo-review plan-eng-review review ship retro; do rm -f ~/.claude/skills/$s; done` then run `rm -rf ~/.claude/skills/gstack` and remove the gstack section from CLAUDE.md. If this project also has gstack at .claude/skills/gstack, remove it by running `for s in browse plan-ceo-review plan-eng-review review ship retro; do rm -f .claude/skills/$s; done && rm -rf .claude/skills/gstack` and remove the gstack section from the project CLAUDE.md too.
+```
+/plugin uninstall gstack@gstack-marketplace
+/plugin marketplace remove gstack-marketplace
+```
 
 ## Development
 
