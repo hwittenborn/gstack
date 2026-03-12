@@ -5,14 +5,14 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "browse": "./browse/dist/browse"
+    "browse": "./skills/browse/dist/browse"
   },
   "scripts": {
-    "build": "bun build --compile browse/src/cli.ts --outfile browse/dist/browse",
-    "dev": "bun run browse/src/cli.ts",
-    "server": "bun run browse/src/server.ts",
+    "build": "bun build --compile skills/browse/src/cli.ts --outfile skills/browse/dist/browse",
+    "dev": "bun run skills/browse/src/cli.ts",
+    "server": "bun run skills/browse/src/server.ts",
     "test": "bun test",
-    "start": "bun run browse/src/server.ts"
+    "start": "bun run skills/browse/src/server.ts"
   },
   "dependencies": {
     "playwright": "^1.58.2",

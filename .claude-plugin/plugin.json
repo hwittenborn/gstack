@@ -1,0 +1,13 @@
+{
+  "name": "gstack",
+  "description": "Complete gstack bundle with all workflow skills: /plan-ceo-review (founder mode), /plan-eng-review (eng manager), /review (paranoid engineer), /ship (release automation), /browse (headless browser QA), /retro (weekly retrospective).",
+  "version": "0.0.2",
+  "author": {
+    "name": "Garry Tan",
+    "email": "garry@ycombinator.com"
+  },
+  "homepage": "https://github.com/garrytan/gstack",
+  "repository": "https://github.com/garrytan/gstack",
+  "license": "MIT",
+  "keywords": ["workflow", "planning", "review", "shipping", "browser", "qa", "retrospective"]
+}
