@@ -44,7 +44,7 @@ gstack's browser is a compiled CLI binary that talks to a persistent local Chrom
 
 ### Lifecycle
 
-1. **First call**: CLI checks `/tmp/browse-server.json` for a running server. None found — it spawns `bun run browse/src/server.ts` in the background. The server launches headless Chromium via Playwright, picks a port (9400-9410), generates a bearer token, writes the state file, and starts accepting HTTP requests. This takes ~3 seconds.
+1. **First call**: CLI checks `/tmp/browse-server.json` for a running server. None found — it spawns `bun run skills/browse/src/server.ts` in the background. The server launches headless Chromium via Playwright, picks a port (9400-9410), generates a bearer token, writes the state file, and starts accepting HTTP requests. This takes ~3 seconds.
 
 2. **Subsequent calls**: CLI reads the state file, sends an HTTP POST with the bearer token, prints the response. ~100-200ms round trip.
 
@@ -55,7 +55,7 @@ gstack's browser is a compiled CLI binary that talks to a persistent local Chrom
 ### Key components
 
 ```
-browse/
+skills/browse/
 ├── src/
 │   ├── cli.ts              # Thin client — reads state file, sends HTTP, prints response
 │   ├── server.ts           # Bun.serve HTTP server — routes commands to Playwright
@@ -160,12 +160,12 @@ The browser automation layer is built on [Playwright](https://playwright.dev/) b
 bun install              # install dependencies + Playwright Chromium
 bun test                 # run integration tests (~3s)
 bun run dev <cmd>        # run CLI from source (no compile)
-bun run build            # compile to browse/dist/browse
+bun run build            # compile to skills/browse/dist/browse
 ```
 
 ### Dev mode vs compiled binary
 
-During development, use `bun run dev` instead of the compiled binary. It runs `browse/src/cli.ts` directly with Bun, so you get instant feedback without a compile step:
+During development, use `bun run dev` instead of the compiled binary. It runs `skills/browse/src/cli.ts` directly with Bun, so you get instant feedback without a compile step:
 
 ```bash
 bun run dev goto https://example.com
@@ -174,45 +174,35 @@ bun run dev snapshot -i
 bun run dev click @e3
 ```
 
-The compiled binary (`bun run build`) is only needed for distribution. It produces a single ~58MB executable at `browse/dist/browse` using Bun's `--compile` flag.
+The compiled binary (`bun run build`) is only needed for distribution. It produces a single ~58MB executable at `skills/browse/dist/browse` using Bun's `--compile` flag.
 
 ### Running tests
 
 ```bash
-bun test                         # run all tests
-bun test browse/test/commands    # run command integration tests only
-bun test browse/test/snapshot    # run snapshot tests only
+bun test                                    # run all tests
+bun test skills/browse/test/commands        # run command integration tests only
+bun test skills/browse/test/snapshot        # run snapshot tests only
 ```
 
-Tests spin up a local HTTP server (`browse/test/test-server.ts`) serving HTML fixtures from `browse/test/fixtures/`, then exercise the CLI commands against those pages. Tests take ~3 seconds.
+Tests spin up a local HTTP server (`skills/browse/test/test-server.ts`) serving HTML fixtures from `skills/browse/test/fixtures/`, then exercise the CLI commands against those pages. Tests take ~3 seconds.
 
 ### Source map
 
 | File | Role |
 |------|------|
-| `browse/src/cli.ts` | Entry point. Reads `/tmp/browse-server.json`, sends HTTP to the server, prints response. |
-| `browse/src/server.ts` | Bun HTTP server. Routes commands to the right handler. Manages idle timeout. |
-| `browse/src/browser-manager.ts` | Chromium lifecycle — launch, tab management, ref map, crash detection. |
-| `browse/src/snapshot.ts` | Parses Playwright's accessibility tree, assigns `@ref` labels, builds Locator map. |
-| `browse/src/read-commands.ts` | Non-mutating commands: `text`, `html`, `links`, `js`, `css`, `forms`, etc. |
-| `browse/src/write-commands.ts` | Mutating commands: `goto`, `click`, `fill`, `select`, `scroll`, etc. |
-| `browse/src/meta-commands.ts` | Server management: `status`, `stop`, `restart`. |
-| `browse/src/buffers.ts` | In-memory + disk capture for console and network logs. |
-
-### Deploying to the active skill
-
-The active skill lives at `~/.claude/skills/gstack/`. After making changes:
-
-1. Push your branch
-2. Pull in the skill directory: `cd ~/.claude/skills/gstack && git pull`
-3. Rebuild: `cd ~/.claude/skills/gstack && bun run build`
-
-Or copy the binary directly: `cp browse/dist/browse ~/.claude/skills/gstack/browse/dist/browse`
+| `skills/browse/src/cli.ts` | Entry point. Reads `/tmp/browse-server.json`, sends HTTP to the server, prints response. |
+| `skills/browse/src/server.ts` | Bun HTTP server. Routes commands to the right handler. Manages idle timeout. |
+| `skills/browse/src/browser-manager.ts` | Chromium lifecycle — launch, tab management, ref map, crash detection. |
+| `skills/browse/src/snapshot.ts` | Parses Playwright's accessibility tree, assigns `@ref` labels, builds Locator map. |
+| `skills/browse/src/read-commands.ts` | Non-mutating commands: `text`, `html`, `links`, `js`, `css`, `forms`, etc. |
+| `skills/browse/src/write-commands.ts` | Mutating commands: `goto`, `click`, `fill`, `select`, `scroll`, etc. |
+| `skills/browse/src/meta-commands.ts` | Server management: `status`, `stop`, `restart`. |
+| `skills/browse/src/buffers.ts` | In-memory + disk capture for console and network logs. |
 
 ### Adding a new command
 
 1. Add the handler in `read-commands.ts` (non-mutating) or `write-commands.ts` (mutating)
 2. Register the route in `server.ts`
-3. Add a test case in `browse/test/commands.test.ts` with an HTML fixture if needed
+3. Add a test case in `skills/browse/test/commands.test.ts` with an HTML fixture if needed
 4. Run `bun test` to verify
 5. Run `bun run build` to compile
